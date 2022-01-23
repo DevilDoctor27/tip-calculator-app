@@ -12,9 +12,7 @@ import { useEffect, useState } from 'react'
 import InputCustom from '../components/InputCustom'
 
 /* Things to do */
-// Show Total
-// Fix inputs
-// Refactor
+// Fix percent update
 
 export default function Home() {
   /* Display */
@@ -26,76 +24,68 @@ export default function Home() {
   const allPercentages = [5, 10, 15, 25, 50]
   const [currentPercent, setCurrentPercent] = useState(10)
   const [customPercent, setCustomPercent] = useState('')
-  const [isCustomActive, setIsCustomActive] = useState(false)
+  /* Percent */
 
   /* Bill */
   const [billError, setBillError] = useState(false)
   const [isBillActive, setIsBillActive] = useState(false)
   const [billValue, setBillValue] = useState(0)
   const [billInput, setBillInput] = useState('')
+  /* Bill */
 
   /* Person */
   const [personError, setPersonError] = useState(false)
   const [isPersonActive, setIsPersonActive] = useState(false)
   const [personValue, setPersonValue] = useState(0)
   const [personInput, setPersonInput] = useState('')
+  /* Person */
 
   /* Custom Percent Related */
-
   // On click set current percent from the button value
   // Remove active state from custom input
   // Remove all values from custom input
   const handlePercentButtonClick = (e) => {
     setCurrentPercent(Number(e.target.value))
-    setIsCustomActive(false)
     setCustomPercent('')
   }
-
   // Every input changes will go in temp variable as string
   // Prevent value less than 0
   const handleCustomPercent = (e) => {
-    setCustomPercent(e.target.value)
+    setCustomPercent(e.target.value.substring(0, 3))
     if (e.target.value <= 0) {
       setCustomPercent('')
     }
   }
-
   // If focus lost
   // If no value set default value from array
   // If there is value transform to integer and set as current
-  // Set input as active
   const handleCustomBlur = () => {
     if (!customPercent) {
       return setCurrentPercent(allPercentages[1])
     }
     setCurrentPercent(Number(customPercent))
-    setIsCustomActive(true)
   }
   /* Custom Percent Related */
 
   /* Bill Input Related */
-
   // On input
   // Set visible input value as string
   // Set integer input value
   // Prevent value less than 0
   const handleBillInput = (e) => {
-    if (billInput.length >= 5) return
-    setBillInput(e.target.value)
-    setBillValue(Number(e.target.value))
+    setBillInput(e.target.value.substring(0, 5))
+    setBillValue(Number(e.target.value.substring(0, 5)))
     if (e.target.value <= 0) {
       setBillInput('')
       setBillValue(0)
     }
   }
-
   // On focus activate input
   // Remove error from input
   const handleBillFocus = () => {
     setIsBillActive(true)
     setBillError(false)
   }
-
   // On focus lost
   // If value empty set error
   const handleBillBlur = () => {
@@ -111,22 +101,19 @@ export default function Home() {
   // Set integer input value
   // Prevent value less than 0
   const handlePersonInput = (e) => {
-    if (personInput.length === 3) return
-    setPersonInput(e.target.value)
-    setPersonValue(Number(e.target.value))
+    setPersonInput(e.target.value.substring(0, 3))
+    setPersonValue(Number(e.target.value.substring(0, 3)))
     if (e.target.value <= 0) {
       setPersonInput('')
       setPersonValue(0)
     }
   }
-
   // On focus activate input
   // Remove error from input
   const handlePersonFocus = () => {
     setIsPersonActive(true)
     setPersonError(false)
   }
-
   // On focus lost
   // If value empty set error
   const handlePersonBlur = () => {
@@ -153,27 +140,31 @@ export default function Home() {
   }
   /* Reset */
 
-  const calcTotal = () => {
+  // Display functions
+  function calcTotal() {
     if (!isBillActive || !isPersonActive || billError || personError) return
     const tempTip = Math.ceil(
       (billValue / personValue / 100) * currentPercent * 100
     )
-
     if (tempTip === Infinity) {
       return setTip(0)
     }
-
     setTip(tempTip / 100)
-    console.log(tempTip / 100)
   }
-  const calcTipAmount = () => {
-    // console.log('amount')
+  function calcTipAmount() {
+    if (!isBillActive || !isPersonActive || billError || personError) return
+    const tempTotal = Math.ceil((billValue / personValue + tip) * 100)
+    if (tempTotal === Infinity) {
+      return setTotal(0)
+    }
+    setTotal(tempTotal / 100)
   }
+  // Display functions
 
   useEffect(() => {
     calcTotal()
     calcTipAmount()
-  }, [billValue, currentPercent, personValue])
+  }, [billValue, currentPercent, personValue, tip, total])
 
   return (
     <>
@@ -231,7 +222,6 @@ export default function Home() {
                     action={handleCustomPercent}
                     blurAction={handleCustomBlur}
                     value={customPercent}
-                    active={isCustomActive}
                   />
                 </div>
               </div>

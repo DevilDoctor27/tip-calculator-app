@@ -10,7 +10,7 @@ export default ({ value, error, action, blurAction, focusAction, icon }) => {
       )}
       <input
         type="number"
-        className={`bg-clr-input w-full rounded-md text-right text-2xl px-4 py-1.5 capitalize text-clr-primary font-bold appearance-none active:outline-2 outline-clr-accent placeholder:text-clr-placeholder cursor-pointer ${
+        className={`bg-clr-input w-full rounded-md text-right text-2xl px-4 py-1.5 capitalize text-clr-primary font-bold appearance-none focus:outline-2 outline-clr-accent focus:outline placeholder:text-clr-placeholder cursor-pointer ${
           error ? 'outline-2 outline-clr-error outline' : ''
         } `}
         value={value}
