@@ -1,4 +1,4 @@
-export default ({ type, value }) => {
+const DisplayField = ({ type, value }) => {
   return (
     <div className="flex flex-col xs:flex-row items-center justify-between pt-4 md:pt-0 relative">
       <div>
@@ -11,3 +11,4 @@ export default ({ type, value }) => {
     </div>
   )
 }
+export default DisplayField

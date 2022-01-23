@@ -1,4 +1,4 @@
-export default ({ value, action, blurAction }) => {
+const InputCustom = ({ value, action, blurAction }) => {
   return (
     <div className="h-full py-1">
       <input
@@ -12,3 +12,4 @@ export default ({ value, action, blurAction }) => {
     </div>
   )
 }
+export default InputCustom

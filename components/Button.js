@@ -1,4 +1,4 @@
-export default ({ value, active, action }) => {
+const Button = ({ value, active, action }) => {
   // Percent will change on button click
 
   return (
@@ -16,3 +16,4 @@ export default ({ value, active, action }) => {
     </button>
   )
 }
+export default Button

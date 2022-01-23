@@ -181,7 +181,12 @@ export default function Home() {
         {/* section */}
         <div className="flex flex-col min-h-screen items-center justify-center bg-clr-section overflow-hidden">
           <div className="py-16 relative">
-            <Image src={logo.src} width={logo.width} height={logo.height} />
+            <Image
+              src={logo.src}
+              width={logo.width}
+              height={logo.height}
+              alt="SPLITTER logo"
+            />
             <h1 className="absolute invisible top-0 left-0">SPLITTER</h1>
           </div>
 

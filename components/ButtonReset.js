@@ -1,4 +1,4 @@
-export default ({ children, action, isActive }) => {
+const ButtonReset = ({ children, action, isActive }) => {
   return (
     <button
       className={`w-full bg-clr-accent font-bold rounded-md py-2 text-2xl uppercase text-clr-primary ${
@@ -13,3 +13,4 @@ export default ({ children, action, isActive }) => {
     </button>
   )
 }
+export default ButtonReset

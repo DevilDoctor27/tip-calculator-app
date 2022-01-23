@@ -1,11 +1,16 @@
 import Image from 'next/image'
 
-export default ({ value, error, action, blurAction, focusAction, icon }) => {
+const Input = ({ value, error, action, blurAction, focusAction, icon }) => {
   return (
     <div className="relative z-10">
       {icon && (
         <div className="absolute z-20 left-4 inset-y-0 flex items-center">
-          <Image src={icon.src} height={icon.height} width={icon.width} />
+          <Image
+            src={icon.src}
+            height={icon.height}
+            width={icon.width}
+            alt="icon"
+          />
         </div>
       )}
       <input
@@ -22,3 +27,4 @@ export default ({ value, error, action, blurAction, focusAction, icon }) => {
     </div>
   )
 }
+export default Input
