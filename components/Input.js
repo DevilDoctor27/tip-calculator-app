@@ -14,10 +14,11 @@ const Input = ({ value, error, action, blurAction, focusAction, icon }) => {
         </div>
       )}
       <input
-        type="number"
+        type="text"
         className={`bg-clr-input w-full rounded-md text-right text-2xl px-4 py-1.5 capitalize text-clr-primary font-bold appearance-none focus:outline-2 outline-clr-accent focus:outline placeholder:text-clr-placeholder cursor-pointer ${
           error ? 'outline-2 outline-clr-error outline' : ''
         } `}
+        pattern="[1-9]"
         value={value}
         onChange={action}
         placeholder="0"

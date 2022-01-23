@@ -13,13 +13,15 @@ import InputCustom from '../components/InputCustom'
 
 export default function Home() {
   /* Display */
-  const [tip, setTip] = useState(0)
-  const [total, setTotal] = useState(0)
+  const [tipValue, setTipValue] = useState(0)
+  const [tipDisplay, setTipDisplay] = useState('0.00')
+  const [totalValue, setTotalValue] = useState(0)
+  const [totalDisplay, setTotalDisplay] = useState('0.00')
   /* Display */
 
   /* Percent */
   const allPercentages = [5, 10, 15, 25, 50]
-  const [currentPercent, setCurrentPercent] = useState(10)
+  const [currentPercent, setCurrentPercent] = useState(0)
   const [customPercent, setCustomPercent] = useState('')
   /* Percent */
 
@@ -37,18 +39,25 @@ export default function Home() {
   const [personInput, setPersonInput] = useState('')
   /* Person */
 
+  /* Reset */
+  const [isResetActive, setIsResetActive] = useState(false)
+  /* Reset */
+
   /* Percent Related */
   const handlePercentButtonClick = (e) => {
     setCurrentPercent(Number(e.target.value)) // Set current percent from the button value
     setCustomPercent('') // Remove value from custom input
+    setIsResetActive(true)
   }
   const handleCustomPercent = (e) => {
     setCustomPercent(e.target.value.substring(0, 3)) //Input goes to temp variable // prevented length over three symbols
     if (e.target.value <= 0) {
       setCustomPercent('') // Prevent value less than 0
     }
+    setIsResetActive(true)
   }
   const handleCustomBlur = () => {
+    setIsResetActive(true)
     if (!customPercent) {
       return setCurrentPercent(allPercentages[1]) // Set default value if input empty
     }
@@ -58,7 +67,7 @@ export default function Home() {
 
   /* Bill Input Related */
   const handleBillInput = (e) => {
-    setBillInput(e.target.value.substring(0, 5)) // Set input value // Prevent over five symbols
+    setBillInput(e.target.value.substring(0, 7)) // Set input value // Prevent over five symbols
     setBillValue(Number(e.target.value.substring(0, 5))) // Set value for calculations // Prevent over five symbols
     if (e.target.value <= 0) {
       setBillInput('') // Prevent value less than 0
@@ -68,6 +77,7 @@ export default function Home() {
   const handleBillFocus = () => {
     setIsBillActive(true) // Set input active
     setBillError(false) // Remove error
+    setIsResetActive(true)
   }
   const handleBillBlur = () => {
     if (!billInput) {
@@ -88,6 +98,7 @@ export default function Home() {
   const handlePersonFocus = () => {
     setIsPersonActive(true) // Set input active
     setPersonError(false) // Remove error
+    setIsResetActive(true)
   }
   const handlePersonBlur = () => {
     if (!personInput) {
@@ -98,6 +109,7 @@ export default function Home() {
 
   /* Reset */
   const resetHandler = () => {
+    if (!isResetActive) return
     setBillValue(0)
     setBillInput('')
     setIsBillActive(false)
@@ -106,10 +118,13 @@ export default function Home() {
     setPersonInput('')
     setIsPersonActive(false)
     setPersonError(false)
-    setCurrentPercent(allPercentages[1])
+    setCurrentPercent(0)
     setCustomPercent('')
-    setTip(0)
-    setTotal(0)
+    setTipValue(0)
+    setTipDisplay('0.00')
+    setTotalValue(0)
+    setTotalDisplay('0.00')
+    setIsResetActive(false)
   }
   /* Reset */
 
@@ -121,43 +136,41 @@ export default function Home() {
       (billValue / personValue / 100) * currentPercent * 100
     )
     if (tempTip === Infinity) {
-      return setTip(0)
+      setTipValue(0)
+      setTipDisplay('0.00')
+      return
     }
     // Magic ***++**++++**++***
+    console.log('display: ' + tipDisplay)
+    console.log('value: ' + tipValue)
+
     const result = tempTip / 100
-    if (result % 1 === 0) {
-      setTip(result)
-    } else {
-      //***************** Number value transforming to string!!!!
-      setTip(result.toFixed(2))
-    }
+    setTipValue(result)
+    setTipDisplay(result.toFixed(2))
   }
   function calcTotal() {
     if (!isBillActive || !isPersonActive || billError || personError) return
     // Magic ***++**++++**++***
-    // tip may be string so transforming back to NUMBER
-    const tempTotal = Math.round((billValue / personValue + Number(tip)) * 100)
+    const tempTotal = Math.round((billValue / personValue + tipValue) * 100)
     if (tempTotal === Infinity) {
-      return setTotal(0)
+      setTotalValue(0)
+      setTotalDisplay('0.00')
+      return
     }
     // Magic ***++**++++**++***
     const result = tempTotal / 100
-    if (result % 1 === 0) {
-      setTotal(result)
-    } else {
-      //****************** Number value transforming to string!!!!
-      setTotal(result.toFixed(2))
-    }
+    setTotalValue(result)
+    setTotalDisplay(result.toFixed(2))
   }
   // Display functions
 
   useEffect(() => {
     calcTipAmount()
-  }, [billValue, currentPercent, personValue, tip])
+  }, [billValue, currentPercent, personValue, tipValue])
 
   useEffect(() => {
     calcTotal()
-  }, [billValue, currentPercent, personValue, tip])
+  }, [billValue, currentPercent, personValue, tipValue])
 
   return (
     <>
@@ -241,12 +254,12 @@ export default function Home() {
             {/* display */}
             <div className="bg-clr-primary p-6 rounded-2xl grid gap-8 md:p-8">
               <div className="grid gap-2 md:gap-0">
-                <DisplayField type={'Tip Amount'} value={tip} />
-                <DisplayField type={'Total'} value={total} />
+                <DisplayField type={'Tip Amount'} value={tipDisplay} />
+                <DisplayField type={'Total'} value={totalDisplay} />
               </div>
 
               <div className="md:mt-auto">
-                <ButtonReset action={resetHandler} isActive={true}>
+                <ButtonReset action={resetHandler} isActive={isResetActive}>
                   Reset
                 </ButtonReset>
               </div>
