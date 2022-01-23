@@ -11,9 +11,6 @@ import InputHeader from '../components/InputHeader'
 import { useEffect, useState } from 'react'
 import InputCustom from '../components/InputCustom'
 
-/* Things to do */
-// Fix percent update
-
 export default function Home() {
   /* Display */
   const [tip, setTip] = useState(0)
@@ -40,85 +37,61 @@ export default function Home() {
   const [personInput, setPersonInput] = useState('')
   /* Person */
 
-  /* Custom Percent Related */
-  // On click set current percent from the button value
-  // Remove active state from custom input
-  // Remove all values from custom input
+  /* Percent Related */
   const handlePercentButtonClick = (e) => {
-    setCurrentPercent(Number(e.target.value))
-    setCustomPercent('')
+    setCurrentPercent(Number(e.target.value)) // Set current percent from the button value
+    setCustomPercent('') // Remove value from custom input
   }
-  // Every input changes will go in temp variable as string
-  // Prevent value less than 0
   const handleCustomPercent = (e) => {
-    setCustomPercent(e.target.value.substring(0, 3))
+    setCustomPercent(e.target.value.substring(0, 3)) //Input goes to temp variable // prevented length over three symbols
     if (e.target.value <= 0) {
-      setCustomPercent('')
+      setCustomPercent('') // Prevent value less than 0
     }
   }
-  // If focus lost
-  // If no value set default value from array
-  // If there is value transform to integer and set as current
   const handleCustomBlur = () => {
     if (!customPercent) {
-      return setCurrentPercent(allPercentages[1])
+      return setCurrentPercent(allPercentages[1]) // Set default value if input empty
     }
-    setCurrentPercent(Number(customPercent))
+    setCurrentPercent(Number(customPercent)) // Set value from input
   }
-  /* Custom Percent Related */
+  /* Percent Related */
 
   /* Bill Input Related */
-  // On input
-  // Set visible input value as string
-  // Set integer input value
-  // Prevent value less than 0
   const handleBillInput = (e) => {
-    setBillInput(e.target.value.substring(0, 5))
-    setBillValue(Number(e.target.value.substring(0, 5)))
+    setBillInput(e.target.value.substring(0, 5)) // Set input value // Prevent over five symbols
+    setBillValue(Number(e.target.value.substring(0, 5))) // Set value for calculations // Prevent over five symbols
     if (e.target.value <= 0) {
-      setBillInput('')
-      setBillValue(0)
+      setBillInput('') // Prevent value less than 0
+      setBillValue(0) // Prevent value less than 0
     }
   }
-  // On focus activate input
-  // Remove error from input
   const handleBillFocus = () => {
-    setIsBillActive(true)
-    setBillError(false)
+    setIsBillActive(true) // Set input active
+    setBillError(false) // Remove error
   }
-  // On focus lost
-  // If value empty set error
   const handleBillBlur = () => {
     if (!billInput) {
-      setBillError(true)
+      setBillError(true) // If value is empty set error
     }
   }
   /* Bill Input Related */
 
   /* Person Input Related */
-  // On input
-  // Set visible input value as string
-  // Set integer input value
-  // Prevent value less than 0
   const handlePersonInput = (e) => {
-    setPersonInput(e.target.value.substring(0, 3))
-    setPersonValue(Number(e.target.value.substring(0, 3)))
+    setPersonInput(e.target.value.substring(0, 3)) // Set input value // Prevent over three symbols
+    setPersonValue(Number(e.target.value.substring(0, 3))) // Set value for calculations // Prevent over five symbols
     if (e.target.value <= 0) {
-      setPersonInput('')
-      setPersonValue(0)
+      setPersonInput('') // Prevent value less than 0
+      setPersonValue(0) // Prevent value less than 0
     }
   }
-  // On focus activate input
-  // Remove error from input
   const handlePersonFocus = () => {
-    setIsPersonActive(true)
-    setPersonError(false)
+    setIsPersonActive(true) // Set input active
+    setPersonError(false) // Remove error
   }
-  // On focus lost
-  // If value empty set error
   const handlePersonBlur = () => {
     if (!personInput) {
-      setPersonError(true)
+      setPersonError(true) // If value is empty set error
     }
   }
   /* Person Input Related */
@@ -141,30 +114,50 @@ export default function Home() {
   /* Reset */
 
   // Display functions
-  function calcTotal() {
+  function calcTipAmount() {
     if (!isBillActive || !isPersonActive || billError || personError) return
-    const tempTip = Math.ceil(
+    // Magic ***++**++++**++***
+    const tempTip = Math.round(
       (billValue / personValue / 100) * currentPercent * 100
     )
     if (tempTip === Infinity) {
       return setTip(0)
     }
-    setTip(tempTip / 100)
+    // Magic ***++**++++**++***
+    const result = tempTip / 100
+    if (result % 1 === 0) {
+      setTip(result)
+    } else {
+      //***************** Number value transforming to string!!!!
+      setTip(result.toFixed(2))
+    }
   }
-  function calcTipAmount() {
+  function calcTotal() {
     if (!isBillActive || !isPersonActive || billError || personError) return
-    const tempTotal = Math.ceil((billValue / personValue + tip) * 100)
+    // Magic ***++**++++**++***
+    // tip may be string so transforming back to NUMBER
+    const tempTotal = Math.round((billValue / personValue + Number(tip)) * 100)
     if (tempTotal === Infinity) {
       return setTotal(0)
     }
-    setTotal(tempTotal / 100)
+    // Magic ***++**++++**++***
+    const result = tempTotal / 100
+    if (result % 1 === 0) {
+      setTotal(result)
+    } else {
+      //****************** Number value transforming to string!!!!
+      setTotal(result.toFixed(2))
+    }
   }
   // Display functions
 
   useEffect(() => {
-    calcTotal()
     calcTipAmount()
-  }, [billValue, currentPercent, personValue, tip, total])
+  }, [billValue, currentPercent, personValue, tip])
+
+  useEffect(() => {
+    calcTotal()
+  }, [billValue, currentPercent, personValue, tip])
 
   return (
     <>
